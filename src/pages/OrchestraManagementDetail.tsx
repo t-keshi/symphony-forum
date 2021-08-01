@@ -12,6 +12,7 @@ import { OrchestraInfoForms } from '../components/ui/orchestra/OrchestraInfo/Orc
 import { OrchestraMembersForm } from '../components/ui/orchestra/OrchestraMembers/OrchestraMembersForm';
 import { useFetchOrchestra } from '../containers/controllers/orchestra/useFetchOrchestra';
 import { useFetchUserInfo } from '../containers/controllers/user/useFetchUserInfo';
+import { useGoogleMapScript } from '../utility/hooks/useGoogleMapScript';
 import { useTab } from '../utility/hooks/useTab';
 import { useTitle } from '../utility/hooks/useTitle';
 
@@ -26,6 +27,7 @@ export const OrchestraManagementDetail: React.VFC = () => {
   );
 
   useTitle('SymphonyForum | 楽団運営');
+  useGoogleMapScript();
 
   useEffect(() => {
     const fetch = async () => {

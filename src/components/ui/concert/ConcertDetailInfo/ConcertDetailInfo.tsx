@@ -13,6 +13,7 @@ interface Props {
 }
 
 export const ConcertDetailInfo: React.VFC<Props> = ({
+  location,
   date,
   openAt,
   startAt,
@@ -50,7 +51,7 @@ export const ConcertDetailInfo: React.VFC<Props> = ({
         <ListItemIcon>
           <LocationOn fontSize="small" />
         </ListItemIcon>
-        <ListItemText secondary="兵庫県尼崎市あましんアルカイックホール" />
+        <ListItemText secondary={location} />
       </ListItem>
     </List>
   </div>

@@ -20,6 +20,7 @@ import { useTitle } from '../utility/hooks/useTitle';
 const useStyles = makeStyles((theme) => ({
   orchestraLink: {
     marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(2),
     display: 'flex',
     justifyContent: 'flex-end',
   },
@@ -49,12 +50,12 @@ export const ConcertDetail: React.VFC = () => {
       <ConcertFlyer title={data?.title} image={musicNote} />
       <Container maxWidth={false}>
         <Box py={2} position="relative">
-          <ConcertSummary orchestraName="大阪大学吹奏楽団" />
+          <ConcertSummary orchestraName={data?.orchestra.name ?? ''} />
           {data !== undefined && (
             <>
               <Box mt={4} />
               <ConcertDetailInfo
-                location="兵庫県尼崎市あましんアルカイックホール"
+                location={data.address}
                 date={data.date}
                 startAt={data.startAt}
                 openAt={data.openAt}

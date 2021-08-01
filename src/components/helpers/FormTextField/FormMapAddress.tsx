@@ -3,10 +3,14 @@ import { Grid, TextField, TextFieldProps, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { LocationOn } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import React from 'react';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
-import { useSearchMap } from '../../../containers/controllers/concert/useSearchMap';
+import {
+  GoogleMapLocation,
+  useSearchAccess,
+} from '../../../containers/controllers/concert/useSearchAccess';
 import { useDebounceInput } from '../../../utility/hooks/useDebounceInput';
 
 interface Props<TFieldValues> {
@@ -19,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     color: theme.palette.text.secondary,
     marginRight: theme.spacing(2),
-    paddingTop: theme.spacing(0.5),
+    paddingTop: '4px',
   },
 }));
 
@@ -31,16 +35,10 @@ export const FormMapLocation = <TFieldValues extends FieldValues>({
 }: Props<TFieldValues> & Partial<TextFieldProps>): React.ReactElement => {
   const classes = useStyles();
   const { value, debounceValue, setValue } = useDebounceInput();
-  const { data: mapData, isLoading } = useSearchMap(debounceValue);
-  const renderOption = (option: google.maps.places.AutocompletePrediction) => {
-    const matches = option.structured_formatting.main_text_matched_substrings;
-    const parts = parse(
-      option.structured_formatting.main_text,
-      matches.map((match: google.maps.places.PredictionSubstring) => [
-        match.offset,
-        match.offset + match.length,
-      ]),
-    );
+  const { data, isLoading } = useSearchAccess(debounceValue);
+  const renderOption = (option: GoogleMapLocation) => {
+    const matches = match(option.address, value);
+    const parts = parse(option.address, matches);
 
     return (
       <Grid container alignItems="center">
@@ -84,16 +82,12 @@ export const FormMapLocation = <TFieldValues extends FieldValues>({
           blurOnSelect
           loading={isLoading}
           loadingText="読み込み中..."
-          options={mapData?.predictions ?? []}
-          getOptionLabel={(option?) =>
-            option.structured_formatting.main_text ?? ''
-          }
-          getOptionSelected={() => mapData !== undefined}
-          value={field.value as google.maps.places.AutocompletePrediction}
-          onChange={(
-            _,
-            newValue: string | google.maps.places.AutocompletePrediction | null,
-          ) => {
+          options={data ?? []}
+          getOptionLabel={(option?) => option.address ?? ''}
+          getOptionSelected={() => data !== undefined}
+          defaultValue={null}
+          value={field.value as GoogleMapLocation}
+          onChange={(_, newValue: string | GoogleMapLocation | null) => {
             field.onChange(newValue);
           }}
           inputValue={value}

@@ -71,7 +71,6 @@ export const ProfileForm: React.VFC<IconButtonProps> = () => {
             options: partOptions,
             getOptionLabel: (innerOption: string) => innerOption,
             fullWidth: true,
-            freeSolo: true,
             onChange: (e: unknown, innerOption: string | string[] | null) => {
               if (innerOption !== null) {
                 setValue('part', innerOption as string);

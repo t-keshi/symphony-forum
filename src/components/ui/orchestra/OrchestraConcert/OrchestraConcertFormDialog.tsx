@@ -4,8 +4,8 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { useCreateConcert } from '../../../../containers/controllers/concert/useCreateConcert';
-import { GoogleMapLocation } from '../../../../containers/controllers/concert/useSearchAccess';
 import { extractPrefectureFromAddress } from '../../../../utility/extractPrefectureFromAddress';
+import { omitJapanPrefix } from '../../../../utility/omitJapanPrefix';
 import { yupLocaleJP } from '../../../../utility/yupLocaleJP';
 import { DialogCustom } from '../../../helpers/DialogCustom/DialogCustom';
 import { FormMapLocation } from '../../../helpers/FormTextField/FormMapLocation';
@@ -17,6 +17,11 @@ interface Props {
   handleIsModalOpen: (nextValue?: boolean | undefined) => void;
 }
 
+interface GoogleMapLocation {
+  description: string;
+  // eslint-disable-next-line camelcase
+  place_id: string;
+}
 export interface FormValues {
   title: string;
   date: string;
@@ -30,8 +35,8 @@ const schema: yup.SchemaOf<FormValues> = yup.object().shape({
   title: yup.string().min(1).max(30).required(),
   date: yup.string().required(),
   location: yup.object().shape({
-    address: yup.string().required(),
-    placeId: yup.string().required(),
+    description: yup.string().required(),
+    place_id: yup.string().required(),
   }),
   symphonies: yup.array().of(yup.object().shape({ value: yup.string() })),
 });
@@ -69,9 +74,9 @@ export const OrchestraConcertFormDialog: React.VFC<Props> = ({
     const variables = {
       title,
       date: new Date(date),
-      address: location.address,
-      placeId: location.placeId,
-      prefecture: extractPrefectureFromAddress(location.address) ?? null,
+      address: omitJapanPrefix(location.description),
+      placeId: location.place_id,
+      prefecture: extractPrefectureFromAddress(location.description) ?? null,
       symphonies: formattedSymphonies,
     };
 
@@ -119,8 +124,8 @@ export const OrchestraConcertFormDialog: React.VFC<Props> = ({
             name="location"
             label="会場"
             errorMessage={
-              errors.location?.address?.message ??
-              errors.location?.placeId?.message
+              errors.location?.description?.message ??
+              errors.location?.place_id?.message
             }
           />
           <Box mt={2} />
