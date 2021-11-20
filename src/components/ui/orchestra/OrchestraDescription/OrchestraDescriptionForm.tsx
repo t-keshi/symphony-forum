@@ -38,7 +38,7 @@ export const OrchestraDescriptionForm: React.VFC<Props> = ({
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({ resolver: yupResolver(schema) });
-  const { mutate } = useUpdateOrchestra();
+  const { mutate, isSuccess } = useUpdateOrchestra();
   const onSubmit = handleSubmit((data) => {
     mutate({ orchestraId, description: data.description });
   });
@@ -51,6 +51,7 @@ export const OrchestraDescriptionForm: React.VFC<Props> = ({
         control={control}
         errorMessage={errors.description?.message}
         onSubmit={onSubmit}
+        isSuccess={isSuccess}
       />
     </div>
   );
