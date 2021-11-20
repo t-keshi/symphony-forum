@@ -51,9 +51,9 @@ export const ProfileForm: React.VFC<IconButtonProps> = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({ resolver: yupResolver(schema) });
-  const { mutate: updateUserInfo } = useUpdateUserInfo();
+  const { mutate: updateUserInfo, isSuccess } = useUpdateUserInfo();
   const onSubmit = handleSubmit((formData) => {
-    updateUserInfo({ profile: formData.profile, part: formData.part });
+    void updateUserInfo({ profile: formData.profile, part: formData.part });
   });
 
   return (
@@ -71,18 +71,22 @@ export const ProfileForm: React.VFC<IconButtonProps> = () => {
             options: partOptions,
             getOptionLabel: (innerOption: string) => innerOption,
             fullWidth: true,
-            onChange: (e: unknown, innerOption: string | string[] | null) => {
+            freeSolo: true,
+            onChange: (_: unknown, innerOption: string | string[] | null) => {
               if (innerOption !== null) {
                 setValue('part', innerOption as string);
               }
-              setValue(
-                'part',
-                (e as { target: { value: string } }).target.value,
-              );
+            },
+            onInputChange: (_: unknown, newValue: string) => {
+              setValue('part', newValue);
             },
           }}
           textFieldProps={{
             margin: 'normal',
+            autoFocus: true,
+            size: 'small',
+            variant: 'standard',
+            label: 'パート',
           }}
           errorMessage={errors.part?.message}
         />
@@ -98,7 +102,9 @@ export const ProfileForm: React.VFC<IconButtonProps> = () => {
           margin="normal"
           multiline
           rows={8}
+          label="自己紹介"
           errorMessage={errors.profile?.message}
+          isSuccess={isSuccess}
         />
         <div className={classes.buttonWrapper}>
           <TwitterIconButton

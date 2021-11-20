@@ -1,7 +1,7 @@
 import { IconButton, TextFieldProps, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Edit } from '@material-ui/icons';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Control, FieldValues, Path } from 'react-hook-form';
 import { useToggle } from '../../../utility/hooks/useToggle';
 import { FormTextField } from '../FormTextField/FormTextField';
@@ -13,7 +13,8 @@ interface Props<TFieldValues> {
   name: Path<TFieldValues>;
   errorMessage: string | undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onSubmit: (...args: any) => void;
+  onSubmit: (...args: any) => Promise<void>;
+  isSuccess: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -36,10 +37,18 @@ export const TextEditable = <TFieldValues extends FieldValues>({
   name,
   errorMessage,
   onSubmit,
+  isSuccess,
   ...rest
 }: Props<TFieldValues> & TextFieldProps): React.ReactElement => {
   const classes = useStyles();
   const [isEditMode, handleIsEditMode] = useToggle(false);
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleIsEditMode(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
 
   if (!isEditMode) {
     return (
@@ -78,9 +87,11 @@ export const TextEditable = <TFieldValues extends FieldValues>({
         <YesOrNoButton
           yesLabel="保存"
           yesButtonProps={{
-            onClick: () => {
-              onSubmit();
-              handleIsEditMode(false);
+            onClick: async () => {
+              await onSubmit();
+              if (!errorMessage) {
+                handleIsEditMode(false);
+              }
             },
           }}
           noLabel="キャンセル"

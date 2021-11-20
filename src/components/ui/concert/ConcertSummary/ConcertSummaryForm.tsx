@@ -33,7 +33,7 @@ export const ConcertSummaryForm: React.VFC<Props> = ({
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({ resolver: yupResolver(schema) });
-  const { mutate } = useUpdateConcert();
+  const { mutate, isSuccess } = useUpdateConcert();
   const params: { concertId: string } = useParams();
   const onSubmit = handleSubmit((data) =>
     mutate({
@@ -53,6 +53,7 @@ export const ConcertSummaryForm: React.VFC<Props> = ({
         defaultValue={title}
         margin="normal"
         errorMessage={errors.title?.message}
+        isSuccess={isSuccess}
       />
       <TextEditable
         control={control}
@@ -63,6 +64,7 @@ export const ConcertSummaryForm: React.VFC<Props> = ({
         multiline
         rows={4}
         errorMessage={errors.description?.message}
+        isSuccess={isSuccess}
       />
     </div>
   );

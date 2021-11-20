@@ -79,9 +79,6 @@ export const TextEditableComplete = <
           autocompleteProps={autocompleteProps}
           textFieldProps={{
             ...textFieldProps,
-            autoFocus: true,
-            size: 'small',
-            variant: 'standard',
           }}
         />
       </div>
@@ -91,7 +88,6 @@ export const TextEditableComplete = <
           yesButtonProps={{
             onClick: () => {
               onSubmit();
-              handleIsEditMode(false);
             },
           }}
           noLabel="キャンセル"
