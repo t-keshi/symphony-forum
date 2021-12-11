@@ -1,7 +1,6 @@
 # SymphonyForum
 
-## [🏠URL](や見てほしい事柄について教えてください。
-https://symphony-forum.vercel.app/upcoming-concerts)
+## [🏠URL](https://symphony-forum.vercel.app/upcoming-concerts)
 
 ## 概要
 
